@@ -40,6 +40,7 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
     private var saveImageToInternalStorage : Uri? = null
     private var mLatitude : Double = 0.0
     private var mLongitude : Double = 0.0
+    private var mHappyPlaceDetails:HappyPlaceModel?=null
 
 
 
@@ -52,6 +53,10 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
             onBackPressed()
         }
 
+        if(intent.hasExtra(MainActivity.EXTRA_PLACE_DETAILS)){
+            mHappyPlaceDetails = intent.getSerializableExtra(MainActivity.EXTRA_PLACE_DETAILS) as HappyPlaceModel
+        }
+
         dateSetListener = DatePickerDialog.OnDateSetListener {
                 view, year, month, dayOfMonth ->
             cal.set(Calendar.YEAR,year)
@@ -61,6 +66,22 @@ class AddHappyPlaceActivity : AppCompatActivity(), View.OnClickListener {
         }
         //2nd call of updateDateInView() automatically save the date in et_date
         updateDateInView()
+
+        if(mHappyPlaceDetails!=null){
+            supportActionBar?.title = "Edit Happy Place"
+            et_title.setText(mHappyPlaceDetails!!.title)
+            et_description.setText(mHappyPlaceDetails!!.description)
+            et_date.setText(mHappyPlaceDetails!!.date)
+            et_loactoin.setText(mHappyPlaceDetails!!.location)
+            mLatitude = mHappyPlaceDetails!!.latitude
+            mLongitude = mHappyPlaceDetails!!.longitude
+
+            saveImageToInternalStorage = Uri.parse(mHappyPlaceDetails!!.image)
+            iv_place_image.setImageURI(saveImageToInternalStorage)
+            btn_save.text = "UPDATE"
+
+        }
+
         et_date.setOnClickListener(this)
         tv_add_image.setOnClickListener(this)
         btn_save.setOnClickListener(this)
